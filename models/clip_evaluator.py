@@ -91,7 +91,7 @@ class CLIPSimilarityEvaluator(BaseSimilarityEvaluator):
                 return 0.0
             
             # 编码文本
-            inputs = self.processor(
+            inputs = self.preprocess(
                 text=[text],
                 images=image_tensor,
                 return_tensors="pt",
