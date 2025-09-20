@@ -137,16 +137,10 @@ class CLIPSimilarityEvaluator(BaseSimilarityEvaluator):
             
             try:
                 # 预处理图像
-                image_tensor = self.preprocess_image(item['image_path'])
-                if image_tensor is None:
-                    item['similarity_score'] = 0.0
-                    item['processing_time'] = 0.0
-                    item['status'] = 'preprocessing_failed'
-                    results.append(item)
-                    continue
+                image = Image.open(item['image_path']).convert('RGB')
                 
                 # 计算相似度
-                similarity_score = self.compute_similarity(image_tensor, item['caption'])
+                similarity_score = self.compute_similarity(image, item['caption'])
                 
                 processing_time = time.time() - start_time
                 
