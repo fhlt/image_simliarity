@@ -47,7 +47,7 @@ class CLIPSimilarityEvaluator(BaseSimilarityEvaluator):
             start_time = time.time()
             
             self.model = CLIPModel.from_pretrained(self.model_name).to(self.device)
-            self.processor = CLIPProcessor.from_pretrained(self.model_name)
+            self.preprocess = CLIPProcessor.from_pretrained(self.model_name)
             self.model.eval()
             
             load_time = time.time() - start_time
