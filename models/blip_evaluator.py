@@ -108,9 +108,28 @@ class BLIPSimilarityEvaluator(BaseSimilarityEvaluator):
                 )
                 
                 # 计算相似度分数
-                # BLIP模型输出logits，我们需要转换为概率
-                logits = outputs.logits_per_image
-                similarity = torch.sigmoid(logits).squeeze()
+                # BLIP ITM模型通常输出logits，形状为[batch_size, 2]
+                # 其中logits[:, 1]表示匹配分数，logits[:, 0]表示不匹配分数
+                if hasattr(outputs, 'logits'):
+                    logits = outputs.logits
+                    if logits.dim() == 2 and logits.size(1) == 2:
+                        # 对于二分类输出，取匹配分数（索引1）
+                        match_logits = logits[:, 1]
+                        similarity = torch.sigmoid(match_logits).squeeze()
+                    else:
+                        # 对于其他形状的logits，直接使用
+                        similarity = torch.sigmoid(logits).squeeze()
+                elif hasattr(outputs, 'logits_per_image'):
+                    # 如果有logits_per_image属性
+                    logits = outputs.logits_per_image
+                    similarity = torch.sigmoid(logits).squeeze()
+                elif hasattr(outputs, 'itm_score'):
+                    # 如果有itm_score属性
+                    similarity = torch.sigmoid(outputs.itm_score).squeeze()
+                else:
+                    # 如果都没有，记录警告并返回默认值
+                    logger.warning(f"无法从BLIP输出中提取相似度分数，输出属性: {[attr for attr in dir(outputs) if not attr.startswith('_')]}")
+                    return 0.5  # 返回中性分数
                 
                 return similarity.item()
                 
