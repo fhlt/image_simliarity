@@ -1,0 +1,32 @@
+{
+  "model": {
+    "name": "CLIP",
+    "model_name": "openai/clip-vit-base-patch32",
+    "device": null,
+    "batch_size": 32,
+    "image_size": 224
+  },
+  "data": {
+    "input_csv": "outputs/results.csv",
+    "output_csv": "outputs/results_with_scores.csv",
+    "image_dir": "outputs/images",
+    "download_images": true,
+    "validate_images": true,
+    "min_image_width": 64,
+    "max_image_width": 4096,
+    "min_image_height": 64,
+    "max_image_height": 4096,
+    "max_image_size_mb": 50.0
+  },
+  "download": {
+    "timeout": 30,
+    "max_retries": 3,
+    "delay": 0.1,
+    "progress_bar": true
+  },
+  "logging": {
+    "level": "INFO",
+    "log_file": "evaluation.log",
+    "console_output": true
+  }
+}
